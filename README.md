@@ -39,6 +39,6 @@ Copy the rows for `quadratic` and `fft` into the corresponding template
 sections. The template computes `n^2`, `5*n*log2n`, and Mop/s.
 
 `src/multiplication.py` contains both algorithms. The FFT implementation uses
-base-10^4 coefficient blocks, NumPy FFT/IFFT, rounding, and explicit carry
-propagation. `src/utils.py` contains random input generation and the required
-string/coefficient conversions.
+one decimal digit per coefficient (base 10), NumPy FFT/IFFT, rounding, and
+explicit carry propagation. `src/utils.py` contains random input generation
+and the required string/coefficient conversions.
