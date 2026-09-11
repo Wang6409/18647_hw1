@@ -11,7 +11,7 @@ def _normalise(value: str) -> str:
     return value.lstrip("0") or "0"
 
 
-def multiply_quadratic(num1: str, num2: str) -> str:
+def multiply_n2(num1: str, num2: str) -> str:
     num1, num2 = _normalise(num1), _normalise(num2)
     if num1 == "0" or num2 == "0":
         return "0"

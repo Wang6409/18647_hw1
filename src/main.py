@@ -6,7 +6,7 @@ import random
 import time
 from pathlib import Path
 
-from .multiplication import multiply_fft, multiply_quadratic
+from .multiplication import multiply_fft, multiply_n2
 from .utils import operation_count, random_number
 
 
@@ -31,8 +31,8 @@ def main() -> None:
     rows = []
     for n in sizes:
         left, right = random_number(n, rng), random_number(n, rng)
-        expected = multiply_quadratic(left, right)
-        for algorithm, multiply in (("quadratic", multiply_quadratic), ("fft", multiply_fft)):
+        expected = multiply_n2(left, right)
+        for algorithm, multiply in (("n2", multiply_n2), ("fft", multiply_fft)):
             start = time.perf_counter()
             status, elapsed_ms = "ok", None
             try:
@@ -66,4 +66,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
