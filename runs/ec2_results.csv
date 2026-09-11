@@ -1,0 +1,11 @@
+algorithm,n,log2n,runtime_ms,status,operations
+quadratic,1,0,0.007700,ok,1.0
+fft,1,0,0.311300,ok,0.0
+quadratic,2,1,0.007800,ok,4.0
+fft,2,1,0.133700,ok,10.0
+quadratic,4,2,0.009700,ok,16.0
+fft,4,2,0.076500,ok,40.0
+quadratic,8,3,0.020300,ok,64.0
+fft,8,3,0.120900,ok,120.0
+quadratic,16,4,0.037300,ok,256.0
+fft,16,4,0.231700,ok,320.0
