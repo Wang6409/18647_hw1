@@ -12,30 +12,24 @@ def random_number(length: int, rng: random.Random) -> str:
     )
 
 
-def str_to_coeffs(value: str, k: int = 4) -> list[int]:
-    if k < 1 or not value or any(char < "0" or char > "9" for char in value):
-        raise ValueError("value must contain decimal digits and k must be positive")
+def str_to_coeffs(value: str) -> list[int]:
+    if not value or any(char < "0" or char > "9" for char in value):
+        raise ValueError("value must contain decimal digits")
     value = value.lstrip("0") or "0"
-    return [
-        int(value[max(0, end - k) : end])
-        for end in range(len(value), 0, -k)
-    ]
+    return [int(char) for char in reversed(value)]
 
 
-def coeffs_to_str(coeffs: list[int], k: int = 4) -> str:
-    if k < 1:
-        raise ValueError("k must be positive")
-    base = 10**k
+def coeffs_to_str(coeffs: list[int]) -> str:
     values = list(coeffs) or [0]
     for index in range(len(values) - 1):
-        carry, values[index] = divmod(values[index], base)
+        carry, values[index] = divmod(values[index], 10)
         values[index + 1] += carry
-    while values[-1] >= base:
-        carry, values[-1] = divmod(values[-1], base)
+    while values[-1] >= 10:
+        carry, values[-1] = divmod(values[-1], 10)
         values.append(carry)
     while len(values) > 1 and values[-1] == 0:
         values.pop()
-    return str(values[-1]) + "".join(f"{value:0{k}d}" for value in reversed(values[:-1]))
+    return "".join(str(value) for value in reversed(values))
 
 
 def operation_count(algorithm: str, n: int) -> float:
@@ -46,4 +40,3 @@ def operation_count(algorithm: str, n: int) -> float:
     if algorithm == "fft":
         return 5.0 * n * log2(n) if n > 1 else 0.0
     raise ValueError(f"unknown algorithm: {algorithm}")
-

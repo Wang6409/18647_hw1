@@ -30,11 +30,11 @@ def multiply_quadratic(num1: str, num2: str) -> str:
     return "".join(str(digit) for digit in reversed(result))
 
 
-def multiply_fft(num1: str, num2: str, k: int = 4) -> str:
+def multiply_fft(num1: str, num2: str) -> str:
     num1, num2 = _normalise(num1), _normalise(num2)
     if num1 == "0" or num2 == "0":
         return "0"
-    num1_coeffs, num2_coeffs = str_to_coeffs(num1, k), str_to_coeffs(num2, k)
+    num1_coeffs, num2_coeffs = str_to_coeffs(num1), str_to_coeffs(num2)
     size = 1
     while size < len(num1_coeffs) + len(num2_coeffs) - 1:
         size <<= 1
@@ -42,7 +42,5 @@ def multiply_fft(num1: str, num2: str, k: int = 4) -> str:
     num2_fft = np.fft.rfft(np.pad(num2_coeffs, (0, size - len(num2_coeffs))))
     convolution = np.fft.irfft(num1_fft * num2_fft, n=size)
     return coeffs_to_str(
-        [int(round(value)) for value in convolution[: len(num1_coeffs) + len(num2_coeffs) - 1]],
-        k,
+        [int(round(value)) for value in convolution[: len(num1_coeffs) + len(num2_coeffs) - 1]]
     )
-
