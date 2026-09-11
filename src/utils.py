@@ -35,7 +35,7 @@ def coeffs_to_str(coeffs: list[int]) -> str:
 def operation_count(algorithm: str, n: int) -> float:
     if n < 1:
         raise ValueError("n must be positive")
-    if algorithm == "quadratic":
+    if algorithm == "n2":
         return float(n * n)
     if algorithm == "fft":
         return 5.0 * n * log2(n) if n > 1 else 0.0
