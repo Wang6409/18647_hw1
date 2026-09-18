@@ -18,9 +18,15 @@ Run the same seed and sizes on each machine. The runner writes milliseconds,
 status, `n`, and `log2n` to a machine-specific CSV:
 
 ```text
-python -m src.part2_python.main --machine ece --repeats 3
-python -m src.part2_python.main --machine ec2 --repeats 3
+python -m src.part2_python.main --machine ece
+python -m src.part2_python.main --machine ec2
 ```
+
+For the official ten-minute experiment, use `--repeats 1` (or omit the
+option, since 1 is the default). Repeating each multiplication three times is
+useful for a short noise-reduction test, but it unnecessarily consumes the
+ten-minute budget and can prevent the next algorithm or problem size from
+being measured.
 
 The default outputs are `runs/ece_results.csv` and `runs/ec2_results.csv`.
 The runner starts at `n=1` and doubles automatically. It stops when the total
