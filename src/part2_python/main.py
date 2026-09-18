@@ -17,7 +17,10 @@ def main() -> None:
         "--max-length", type=int,
         help="optional safety cap for debugging; normally omit for the assignment run",
     )
-    parser.add_argument("--repeats", type=int, default=3)
+    parser.add_argument(
+        "--repeats", type=int, default=1,
+        help="repetitions per algorithm and size; use 1 for the official run",
+    )
     parser.add_argument("--seed", type=int, default=18647)
     parser.add_argument("--timeout-seconds", type=float, default=600.0)
     parser.add_argument("--output", type=Path)
