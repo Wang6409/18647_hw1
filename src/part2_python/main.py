@@ -13,23 +13,26 @@ from .utils import operation_count, random_number
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run Part 2 multiplication measurements.")
     parser.add_argument("--machine", choices=["ece", "ec2"], required=True)
-    parser.add_argument("--max-length", type=int, default=16384)
+    parser.add_argument(
+        "--max-length", type=int,
+        help="optional safety cap for debugging; normally omit for the assignment run",
+    )
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--seed", type=int, default=18647)
     parser.add_argument("--timeout-seconds", type=float, default=600.0)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    if args.max_length < 1 or args.repeats < 1:
+    if (args.max_length is not None and args.max_length < 1) or args.repeats < 1:
         parser.error("--max-length and --repeats must be positive")
     output = args.output or Path("runs") / f"{args.machine}_results.csv"
     output.parent.mkdir(parents=True, exist_ok=True)
-    sizes, length = [], 1
-    while length <= args.max_length:
-        sizes.append(length)
-        length *= 2
     rng = random.Random(args.seed)
     rows = []
-    for n in sizes:
+    experiment_start = time.perf_counter()
+    n = 1
+    while args.max_length is None or n <= args.max_length:
+        if time.perf_counter() - experiment_start >= args.timeout_seconds:
+            break
         left, right = random_number(n, rng), random_number(n, rng)
         expected = multiply_n2(left, right)
         for algorithm, multiply in (("n2", multiply_n2), ("fft", multiply_fft)):
@@ -41,7 +44,7 @@ def main() -> None:
                     if actual != expected:
                         raise AssertionError("incorrect result")
                 elapsed_ms = (time.perf_counter() - start) * 1000 / args.repeats
-                if elapsed_ms > args.timeout_seconds * 1000:
+                if time.perf_counter() - experiment_start >= args.timeout_seconds:
                     status = "timeout"
             except MemoryError:
                 status = "oom"
@@ -57,6 +60,7 @@ def main() -> None:
                 break
         if rows[-1]["status"] == "timeout":
             break
+        n *= 2
     with output.open("w", newline="", encoding="utf-8") as stream:
         writer = csv.DictWriter(stream, fieldnames=rows[0].keys())
         writer.writeheader()
