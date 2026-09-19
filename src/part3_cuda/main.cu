@@ -65,7 +65,12 @@ int main(int argc, char** argv) {
             std::cout << n << ',' << gpu_ms << ',' << total_ms << '\n';
             if (!valid || timed_out) break;
         } catch (const std::exception& error) {
-            log << n << ",,,error:" << error.what() << '\n';
+            const std::string reason = error.what();
+            const char* status = reason.find("memory") != std::string::npos
+                                     ? "oom"
+                                     : "error";
+            log << n << ",,," << status << ':' << reason << '\n';
+            std::cerr << "stopping at n=" << n << ": " << reason << '\n';
             break;
         }
         if (n > static_cast<std::size_t>(-1) / 2) break;

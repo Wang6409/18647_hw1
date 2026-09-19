@@ -103,6 +103,11 @@ Part 2 results. The script compiles the program, runs the automatic `n=1, 2,
 The CUDA runner also starts at `n=1`, doubles the input size, and stops after
 10 minutes or an unrecoverable CUDA/OS error. Its `--max-length` option is
 optional and is only a testing safeguard; omit it for the actual Part 3 run.
+Before allocating the next FFT, the program checks available GPU memory and
+leaves headroom for cuFFT workspace and the Colab runtime. If the next size
+does not fit, it records an `oom` row and stops before the operating system
+has to kill the process. If an older binary is already present, rebuild with
+`make clean && make` after pulling this change.
 
 Before the official run, perform a short smoke test:
 
