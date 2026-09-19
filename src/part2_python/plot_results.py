@@ -62,7 +62,9 @@ def _plot(table: Path, algorithm: str, output: Path) -> None:
     axis.set_axisbelow(True)
     for label in axis.get_xticklabels():
         label.set_fontweight("bold")
-        label.set_fontsize(11)
+        label.set_fontsize(8)
+        label.set_rotation(45)
+        label.set_horizontalalignment("right")
     for container in axis.containers:
         axis.bar_label(container, fmt="%.2f", padding=3, fontsize=8)
     figure.tight_layout()

@@ -40,17 +40,19 @@ def main() -> None:
             writer.writerow([f"IMUL{n}", n * n, operations, n, log_n,
                              f"{runtime_ms:.6f}", f"{mops:.6f}"])
 
-    figure, axis = plt.subplots(figsize=(10, 6))
+    positions = list(range(len(rows)))
+    figure_width = max(10, min(18, 5 + len(rows) * 0.35))
+    figure, axis = plt.subplots(figsize=(figure_width, 6))
     values = [row[4] for row in rows]
-    bars = axis.bar([row[0] for row in rows], values, color="#568bd3", width=0.7)
+    bars = axis.bar(positions, values, color="#568bd3", width=0.7, label="GPU")
     axis.set_title("GPU FFT Based Long Integer Multiplication",
                    loc="left", fontweight="bold", fontsize=18)
-    axis.text(0, 1.02, "Performance [Mop/s]", transform=axis.transAxes,
+    axis.text(0, 1.01, "Performance [Mop/s]", transform=axis.transAxes,
               color="#777777", fontsize=12, fontweight="bold")
-    axis.set_xlabel("Problem size")
     axis.set_ylabel("Mop/s")
-    axis.set_xticks([row[0] for row in rows],
+    axis.set_xticks(positions,
                     [f"IMUL{row[0]}" for row in rows])
+    axis.legend(loc="upper right", frameon=False)
     axis.grid(axis="y", alpha=0.3)
     axis.set_axisbelow(True)
     axis.spines["top"].set_visible(False)
@@ -60,7 +62,21 @@ def main() -> None:
     axis.tick_params(axis="x", length=0, colors="#555555")
     for label in axis.get_xticklabels():
         label.set_fontweight("bold")
-    axis.bar_label(bars, fmt="%.2f", padding=3, fontsize=8)
+        label.set_fontsize(8)
+        label.set_rotation(45)
+        label.set_horizontalalignment("right")
+    for bar, value in zip(bars, values):
+        if value > 0:
+            axis.text(
+                bar.get_x() + bar.get_width() / 2,
+                value,
+                f"{value:.2f}",
+                ha="center",
+                va="bottom",
+                fontsize=7,
+                rotation=90,
+                clip_on=True,
+            )
     figure.tight_layout()
     args.plot.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(args.plot, dpi=200)
