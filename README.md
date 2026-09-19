@@ -22,6 +22,12 @@ python -m src.part2_python.main --machine ece
 python -m src.part2_python.main --machine ec2
 ```
 
+For the official ten-minute experiment, use `--repeats 1` (or omit the
+option, since 1 is the default). Repeating each multiplication three times is
+useful for a short noise-reduction test, but it unnecessarily consumes the
+ten-minute budget and can prevent the next algorithm or problem size from
+being measured.
+
 The default outputs are `runs/ece_results.csv` and `runs/ec2_results.csv`.
 The runner starts at `n=1` and doubles automatically. It stops when the total
 experiment reaches 10 minutes, or when the process is killed by the OS/OOM.
@@ -44,6 +50,17 @@ ECE/EC2 runtime in milliseconds, and ECE/EC2 Mop/s.
 one decimal digit per coefficient (base 10), NumPy FFT/IFFT, rounding, and
 explicit carry propagation. `src/part2_python/utils.py` contains random input generation
 and the required string/coefficient conversions.
+
+## Correctness validation
+
+`src/part2_python/verify.py` is the correctness test. For several small and medium input
+lengths, it generates random decimal strings, computes the reference result
+with the O(n^2) implementation, and checks that the FFT implementation returns
+the identical product. Run it with:
+
+```text
+python -m src.part2_python.verify
+```
 
 ## Performance plots
 
@@ -113,23 +130,13 @@ To run individual steps in Colab instead:
 !make -C src/part3_cuda
 !src/part3_cuda/fft_multiply --output runs/gpu_results.csv
 !python3 src/part3_cuda/plot_results.py --time total \
-    --input runs/gpu_results.csv \
-    --table runs/gpu_fft_table.csv \
     --plot plots/gpu_fft_mops.pdf
-
-!python3 src/part3_cuda/plot_results.py --time gpu \
-    --input runs/gpu_results.csv \
-    --table runs/gpu_fft_gpu_table.csv \
-    --plot plots/gpu_fft_gpu_mops.pdf
 ```
 
-The plot uses discrete positions for problem sizes such as `IMUL16` and
-`IMUL1024`, so large sizes do not overlap on the x-axis. It uses the same
-`n ld n = 5*n*ld(n)` operation estimate as the assignment. The default plot
-uses `total_ms`; `--time gpu` uses only cuFFT/kernel time.
-
-This creates `runs/gpu_fft_table.csv` and `plots/gpu_fft_mops.pdf`. The
-script also saves `runs/part3_colab.log` and
+This creates `runs/gpu_fft_table.csv` and `plots/gpu_fft_mops.pdf`. Use
+`--time gpu` to plot only cuFFT/kernel time instead of end-to-end time. The
+table uses the same `n ld n = 5*n*ld(n)` operation estimate as the assignment.
+The script also saves `runs/part3_colab.log` and
 `runs/part3_environment.txt`, which should be included as the Part 3 run log
 and environment record. Download the CSV, log, table, PDF, and environment
 file from Colab after the run and include them in the submission.
