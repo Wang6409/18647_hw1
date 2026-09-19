@@ -1,0 +1,5 @@
+n,gpu_time_ms,total_ms,status
+1,17.281,595.743,success
+2,0.0456,26.6694,success
+4,0.04304,27.4074,success
+8,0.041504,28.5825,success
