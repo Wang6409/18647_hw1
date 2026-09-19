@@ -80,27 +80,39 @@ size has exactly two bars, ECE (blue) and EC2 (red), with labels such as
 
 The Part 3 CUDA implementation is in `src/part3_cuda/`. It uses base-10
 digits, double-precision cuFFT (`CUFFT_Z2Z`), a CUDA pointwise multiplication
-kernel, and CPU carry propagation. On a CUDA-enabled AWS GPU instance:
+kernel, and CPU carry propagation. Part 3 is run on a Google Colab GPU runtime
+(for example, T4), not on the AWS one-vCPU instance used for Part 2.
 
 ```text
-cd src/part3_cuda
-make
-./fft_multiply --output ../../runs/gpu_results.csv
+# Colab cell 1: clone/upload the repository and enter its root
+%cd /content/647_hw1
+!pip install -r requirements.txt
+
+# Colab cell 2: select Runtime > Change runtime type > T4 GPU, then run:
+!nvidia-smi
+!bash src/part3_cuda/run_colab.sh
 ```
 
 The executable records both GPU kernel/FFT time and end-to-end time in
-`runs/gpu_results.csv`. Compile with `nvcc`, CUDA, and cuFFT available. Part 3
-is independent of the Part 2 multiplication code and does not change Part 2
-results. Create the template-style GPU table and plot with:
+`runs/gpu_results.csv`. Colab's CUDA runtime provides `nvcc`, CUDA, and cuFFT.
+Part 3 is independent of the Part 2 multiplication code and does not change
+Part 2 results. The script compiles the program, runs the automatic `n=1, 2,
+4, ...` experiment, and creates the template-style GPU table and plot.
 
 The CUDA runner also starts at `n=1`, doubles the input size, and stops after
 10 minutes or an unrecoverable CUDA/OS error. Its `--max-length` option is
 optional and is only a testing safeguard; omit it for the actual Part 3 run.
 
+To run individual steps in Colab instead:
+
 ```text
-python3 ../../src/part3_cuda/plot_results.py --time total
+!make -C src/part3_cuda
+!src/part3_cuda/fft_multiply --output runs/gpu_results.csv
+!python3 src/part3_cuda/plot_results.py --time total
 ```
 
 This creates `runs/gpu_fft_table.csv` and `plots/gpu_fft_mops.png`. Use
 `--time gpu` to plot only cuFFT/kernel time instead of end-to-end time. The
 table uses the same `n ld n = 5*n*ld(n)` operation estimate as the assignment.
+Download the CSV/table/plot from Colab after the run and include them in the
+submission.
