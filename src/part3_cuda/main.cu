@@ -23,13 +23,22 @@ int main(int argc, char** argv) {
     std::size_t max_length = 0;
     bool has_max_length = false;
     std::string output = "runs/gpu_results.csv";
-    for (int i = 1; i + 1 < argc; ++i) {
+    for (int i = 1; i < argc; ++i) {
         std::string argument = argv[i];
+        if (argument == "--help") {
+            std::cout << "Usage: fft_multiply [--max-length N] [--output FILE]\n"
+                         "Omit --max-length for the ten-minute automatic experiment.\n";
+            return 0;
+        }
         if (argument == "--max-length") {
+            if (i + 1 >= argc) throw std::invalid_argument("--max-length needs a value");
             max_length = std::stoul(argv[++i]);
             has_max_length = true;
         }
-        else if (argument == "--output") output = argv[++i];
+        else if (argument == "--output") {
+            if (i + 1 >= argc) throw std::invalid_argument("--output needs a path");
+            output = argv[++i];
+        }
         else throw std::invalid_argument("unknown argument: " + argument);
     }
     std::ofstream log(output);

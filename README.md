@@ -85,10 +85,11 @@ kernel, and CPU carry propagation. Part 3 is run on a Google Colab GPU runtime
 
 ```text
 # Colab cell 1: clone/upload the repository and enter its root
-%cd /content/647_hw1
+!git clone https://github.com/Wang6409/18647_hw1.git /content/18647_hw1
+%cd /content/18647_hw1
 !pip install -r requirements.txt
 
-# Colab cell 2: select Runtime > Change runtime type > T4 GPU, then run:
+# Colab cell 2: select Runtime > Change runtime type > GPU, then run:
 !nvidia-smi
 !bash src/part3_cuda/run_colab.sh
 ```
@@ -97,22 +98,40 @@ The executable records both GPU kernel/FFT time and end-to-end time in
 `runs/gpu_results.csv`. Colab's CUDA runtime provides `nvcc`, CUDA, and cuFFT.
 Part 3 is independent of the Part 2 multiplication code and does not change
 Part 2 results. The script compiles the program, runs the automatic `n=1, 2,
-4, ...` experiment, and creates the template-style GPU table and plot.
+4, ...` experiment, and creates the template-style GPU table and PDF plot.
 
 The CUDA runner also starts at `n=1`, doubles the input size, and stops after
 10 minutes or an unrecoverable CUDA/OS error. Its `--max-length` option is
 optional and is only a testing safeguard; omit it for the actual Part 3 run.
+
+Before the official run, perform a short smoke test:
+
+```text
+!make -C src/part3_cuda
+!mkdir -p runs
+!src/part3_cuda/fft_multiply --max-length 8 --output runs/part3_smoke.csv
+!cat runs/part3_smoke.csv
+```
+
+If the smoke test succeeds, run the official experiment:
+
+```text
+!bash src/part3_cuda/run_colab.sh
+```
 
 To run individual steps in Colab instead:
 
 ```text
 !make -C src/part3_cuda
 !src/part3_cuda/fft_multiply --output runs/gpu_results.csv
-!python3 src/part3_cuda/plot_results.py --time total
+!python3 src/part3_cuda/plot_results.py --time total \
+    --plot plots/gpu_fft_mops.pdf
 ```
 
-This creates `runs/gpu_fft_table.csv` and `plots/gpu_fft_mops.png`. Use
+This creates `runs/gpu_fft_table.csv` and `plots/gpu_fft_mops.pdf`. Use
 `--time gpu` to plot only cuFFT/kernel time instead of end-to-end time. The
 table uses the same `n ld n = 5*n*ld(n)` operation estimate as the assignment.
-Download the CSV/table/plot from Colab after the run and include them in the
-submission.
+The script also saves `runs/part3_colab.log` and
+`runs/part3_environment.txt`, which should be included as the Part 3 run log
+and environment record. Download the CSV, log, table, PDF, and environment
+file from Colab after the run and include them in the submission.

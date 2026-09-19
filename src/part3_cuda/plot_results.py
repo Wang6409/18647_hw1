@@ -12,7 +12,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Create Part 3 GPU table and plot.")
     parser.add_argument("--input", type=Path, default=Path("runs/gpu_results.csv"))
     parser.add_argument("--table", type=Path, default=Path("runs/gpu_fft_table.csv"))
-    parser.add_argument("--plot", type=Path, default=Path("plots/gpu_fft_mops.png"))
+    parser.add_argument("--plot", type=Path, default=Path("plots/gpu_fft_mops.pdf"))
     parser.add_argument("--time", choices=("gpu", "total"), default="total")
     args = parser.parse_args()
 
